@@ -67,5 +67,5 @@ sudoku-solver/
 
 Clone the repository:
 
-git clone 
+git clone https://github.com/6756892524/Sudoku-solver.git
 Open index.html in any modern web browser.
