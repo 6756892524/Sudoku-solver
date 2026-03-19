@@ -1,0 +1,376 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+}
+
+h1 {
+    margin: 0 0 25px 0;
+    color: #333;
+    font-size: 32px;
+    letter-spacing: 1px;
+}
+
+.controls {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button,
+select {
+    margin: 5px;
+    padding: 12px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before,
+select::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+button:active::before,
+select:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+button:hover,
+select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+select {
+    background-color: #667eea;
+    cursor: pointer;
+    padding: 10px 15px;
+}
+
+select option {
+    background-color: white;
+    color: #333;
+    padding: 8px;
+}
+
+#timer {
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #667eea;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 0;
+    width: 450px;
+    height: 450px;
+    margin: 0 auto 25px;
+    border: 3px solid #333;
+    background-color: #fff;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    position: relative;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+/* Thick borders for 3x3 boxes */
+.cell:nth-child(3n) {
+    border-right: 3px solid #333;
+}
+
+.cell:nth-child(9n) {
+    border-right: none;
+}
+
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54),
+.cell:nth-child(n+73):nth-child(-n+81) {
+    border-bottom: 3px solid #333;
+}
+
+.cell:nth-child(n+73) {
+    border-bottom: none;
+}
+
+.cell input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: transparent;
+    padding: 0;
+    color: #333;
+    transition: all 0.2s ease;
+    cursor: cell;
+}
+
+.cell input::placeholder {
+    color: transparent;
+}
+
+.cell input:focus {
+    outline: none;
+    background-color: #fff3cd;
+    box-shadow: inset 0 0 0 2px #ffc107;
+    font-size: 24px;
+}
+
+/* Highlight related cells */
+.cell.highlight input {
+    background-color: #f0f0f0;
+    color: #5a5a5a;
+}
+
+.cell.highlight input:focus {
+    background-color: #e8dbd6;
+    box-shadow: inset 0 0 0 2px #ffc107;
+}
+
+/* Selected cell styling */
+.cell.selected input {
+    background-color: #ffeb3b;
+    color: #000;
+}
+
+.cell.selected input:focus {
+    background-color: #fdd835;
+    box-shadow: inset 0 0 0 2px #f57f17;
+}
+
+.cell.fixed input {
+    background-color: #e8e8e8;
+    color: #000;
+    font-weight: bold;
+    cursor: not-allowed;
+    font-size: 20px;
+}
+
+.cell.fixed input:focus {
+    background-color: #e8e8e8;
+    box-shadow: none;
+    font-size: 20px;
+}
+
+.cell.error input {
+    background-color: #ffcccc;
+    color: #c00;
+}
+
+.cell.error input:focus {
+    background-color: #ffcccc;
+    box-shadow: inset 0 0 0 2px #f44336;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    min-height: 28px;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 8px;
+    animation: slideIn 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+#message.success {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+#message.error {
+    color: #f44336;
+    background-color: #ffebee;
+    border: 1px solid #ef9a9a;
+}
+
+#message.info {
+    color: #0066cc;
+    background-color: #cce5ff;
+    border: 1px solid #99ccff;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.cell.highlight input {
+    animation: subtleHighlight 0.3s ease;
+}
+
+@keyframes subtleHighlight {
+    from {
+        opacity: 0.7;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 26px;
+        margin-bottom: 15px;
+    }
+
+    .controls {
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    button,
+    select {
+        padding: 10px 12px;
+        font-size: 12px;
+        margin: 3px;
+    }
+
+    #timer {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .sudoku-grid {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto 20px;
+        border: 2px solid #333;
+    }
+
+    .cell {
+        width: 33.33px;
+        height: 33.33px;
+    }
+
+    .cell input {
+        font-size: 14px;
+    }
+
+    #message {
+        font-size: 14px;
+        margin-top: 15px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .controls {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    button,
+    select {
+        width: 100%;
+        padding: 10px;
+        font-size: 12px;
+        margin: 3px 0;
+    }
+
+    .sudoku-grid {
+        width: 280px;
+        height: 280px;
+    }
+
+    .cell input {
+        font-size: 12px;
+    }
+}
